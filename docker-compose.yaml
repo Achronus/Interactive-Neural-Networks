@@ -1,0 +1,9 @@
+services:
+  app:
+    build: .
+    container_name: interactive-nn
+    command: gunicorn -b 0.0.0.0:8050 --reload main:server
+    ports:
+      - 8050:8050
+    volumes:
+      - .:/app
