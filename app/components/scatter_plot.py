@@ -7,7 +7,7 @@ from ..data.source import DataSource
 
 
 def render(source: DataSource) -> html.Div:
-    colours = {'positive': ids.POSITIVE_COLOUR, 'negative': ids.NEGATIVE_COLOUR}
+    colours = {ids.LABEL_ONE: ids.POSITIVE_COLOUR, ids.LABEL_TWO: ids.NEGATIVE_COLOUR}
     filtered_data = source.filter(x=source.all_x, y=source.all_y, labels=source.all_labels)
 
     scatter = px.scatter(filtered_data.data, x=DataSchema.X_AXIS, y=DataSchema.Y_AXIS, color=DataSchema.LABELS,

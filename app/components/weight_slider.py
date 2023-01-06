@@ -38,7 +38,7 @@ def render(app: Dash, input_count: int) -> html.Div:
         return f'You have selected {value}'
 
     indices = [i for i in range(1, input_count+1)] * input_count
-    indices.sort()
+    indices.sort()  # input_count = 2 -> [1, 1, 2, 2]
 
     slider_titles = [html.H6(f'w{i}_{idx}') for _, group in itertools.groupby(indices) for idx, i in enumerate(group, start=1)]
     sliders = [WeightSlider(id=f'{i}').create() for i in range(len(slider_titles))]

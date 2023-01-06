@@ -5,6 +5,8 @@ from typing import Callable
 import pandas as pd
 import numpy as np
 
+from app.data import ids
+
 Preprocessor = Callable[[pd.DataFrame], pd.DataFrame]
 
 
@@ -37,8 +39,8 @@ def create_labels(df: pd.DataFrame, n_positive: int) -> pd.DataFrame:
     :param df: (pd.DataFrame) a DataFrame of sample data
     :param n_positive: (int) number of positive labels
     """
-    positive_labels = np.array(['positive' for _ in range(n_positive)], dtype=str)
-    negative_labels = np.array(['negative' for _ in range(df.shape[0] - n_positive)], dtype=str)
+    positive_labels = np.array([ids.LABEL_ONE for _ in range(n_positive)], dtype=str)
+    negative_labels = np.array([ids.LABEL_TWO for _ in range(df.shape[0] - n_positive)], dtype=str)
     labels = np.concatenate((positive_labels, negative_labels))
 
     df[DataSchema.LABELS] = labels
