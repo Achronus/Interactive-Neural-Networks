@@ -1,0 +1,22 @@
+
+#plot-overlay {
+    background: white;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    z-index: 20;
+    opacity: 0.6;
+}
+
+div.rc-slider-track {
+    background-color: #666;
+}
+
+div.rc-slider-handle {
+    border: none;
+}
+
+span.rc-slider-dot-active {
+  border-color: #666;
+  background-color: #666;
+}

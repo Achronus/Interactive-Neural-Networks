@@ -1,7 +1,10 @@
+APP_TITLE = 'Interactive Neural Network'
 SCATTER_PLOT = 'scatter-plot'
 
-WEIGHTS = 'weights'
+WEIGHTS_CONTAINER = 'weights-container'
+WEIGHT_SLIDER = 'weights-slider'
+WEIGHT_SLIDER_CONTAINER = 'weights-slider-container'
 
 BG_COLOUR = '#222'
-COLOUR1 = '#5BAFF7'
-COLOUR2 = '#FF4E5A'
+POSITIVE_COLOUR = '#5BAFF7'
+NEGATIVE_COLOUR = '#FF4E5A'
