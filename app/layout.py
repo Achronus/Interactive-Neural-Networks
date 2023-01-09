@@ -18,7 +18,7 @@ def create_layout(app: Dash, data: DataSource) -> dbc.Container:
                     dbc.Col(
                         xs=12, lg=8,
                         children=[
-                            scatter_plot.render(data)
+                            scatter_plot.render(data, weights=[0, 0, 0, 0])
                         ]
                     ),
                     dbc.Col(

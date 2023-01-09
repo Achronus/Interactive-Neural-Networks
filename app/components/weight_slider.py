@@ -4,9 +4,9 @@ import itertools
 from dash import Dash, dcc, html
 from dash.dependencies import Input, Output
 
+from app.components import scatter_plot
 from app.data import ids
 from app.data.source import DataSource
-from app.models.classifier import Classify
 
 
 @dataclass
@@ -41,7 +41,7 @@ def render_two_inputs(app: Dash, data: DataSource) -> html.Div:
     weight_content = list(itertools.chain.from_iterable(zip(slider_titles, sliders)))
 
     @app.callback(
-        Output(ids.WEIGHTS_CONTAINER_TEXT, "children"),
+        Output(ids.SCATTER_PLOT, "children"),
         [
             Input(f'{ids.WEIGHT_SLIDER}-0', "value"),
             Input(f'{ids.WEIGHT_SLIDER}-1', "value"),
@@ -49,10 +49,8 @@ def render_two_inputs(app: Dash, data: DataSource) -> html.Div:
             Input(f'{ids.WEIGHT_SLIDER}-3', "value")
         ]
     )
-    def update_output(w1: float, w2: float, w3: float, w4: float) -> str:
-        clf = Classify([w1, w2, w3, w4])
-        y_preds = clf.calc(data.x_and_y)
-        return f'Selected values: {w1}, {w2}, {w3}, {w4}, {y_preds}'
+    def update_output(w1: float, w2: float, w3: float, w4: float) -> html.Div:
+        return scatter_plot.render(data, weights=[w1, w2, w3, w4])
 
     return html.Div(
         id=ids.WEIGHTS_CONTAINER,

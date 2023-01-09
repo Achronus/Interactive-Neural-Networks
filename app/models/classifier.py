@@ -22,7 +22,7 @@ Weights:
 Biases:
 - Adjusts the activation threshold of a neuron, shifting it left or right.
 
-Node calculations:
+Node calculations (without bias):
 - output_1 = input_1 x weight_1_1 + input_2 x weight_2_1
 - output_2 = input_1 x weight_1_2 + input_2 x weight_2_2
 """
