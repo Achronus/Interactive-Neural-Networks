@@ -1,8 +1,8 @@
 from __future__ import annotations
-
 from dataclasses import dataclass
 
 import pandas as pd
+import numpy as np
 
 from app.data.generate import DataSchema
 
@@ -38,3 +38,7 @@ class DataSource:
     @property
     def unique_labels(self) -> list[str]:
         return sorted(set(self.all_labels))
+
+    @property
+    def x_and_y(self) -> np.array:
+        return self._data[[DataSchema.X_AXIS, DataSchema.Y_AXIS]].to_numpy()

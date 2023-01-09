@@ -24,7 +24,7 @@ def create_layout(app: Dash, data: DataSource) -> dbc.Container:
                     dbc.Col(
                         xs=12, lg=4,
                         children=[
-                            weight_slider.render(app, input_count=2)
+                            weight_slider.render_two_inputs(app, data)
                         ]
                     )
                 ]

@@ -5,6 +5,8 @@ from dash import Dash, dcc, html
 from dash.dependencies import Input, Output
 
 from app.data import ids
+from app.data.source import DataSource
+from app.models.classifier import Classify
 
 
 @dataclass
@@ -28,21 +30,29 @@ class WeightSlider:
         )
 
 
-def render(app: Dash, input_count: int) -> html.Div:
-
-    @app.callback(
-        Output(ids.WEIGHTS_CONTAINER, "children"),
-        Input(ids.WEIGHT_SLIDER, "value")
-    )
-    def update_output(value: int) -> str:
-        return f'You have selected {value}'
-
+def render_two_inputs(app: Dash, data: DataSource) -> html.Div:
+    """Creates a set of weights following two input nodes."""
+    input_count = 2
     indices = [i for i in range(1, input_count+1)] * input_count
-    indices.sort()  # input_count = 2 -> [1, 1, 2, 2]
+    indices.sort()  # [1, 1, 2, 2]
 
     slider_titles = [html.H6(f'w{i}_{idx}') for _, group in itertools.groupby(indices) for idx, i in enumerate(group, start=1)]
     sliders = [WeightSlider(id=f'{i}').create() for i in range(len(slider_titles))]
     weight_content = list(itertools.chain.from_iterable(zip(slider_titles, sliders)))
+
+    @app.callback(
+        Output(ids.WEIGHTS_CONTAINER_TEXT, "children"),
+        [
+            Input(f'{ids.WEIGHT_SLIDER}-0', "value"),
+            Input(f'{ids.WEIGHT_SLIDER}-1', "value"),
+            Input(f'{ids.WEIGHT_SLIDER}-2', "value"),
+            Input(f'{ids.WEIGHT_SLIDER}-3', "value")
+        ]
+    )
+    def update_output(w1: float, w2: float, w3: float, w4: float) -> str:
+        clf = Classify([w1, w2, w3, w4])
+        y_preds = clf.calc(data.x_and_y)
+        return f'Selected values: {w1}, {w2}, {w3}, {w4}, {y_preds}'
 
     return html.Div(
         id=ids.WEIGHTS_CONTAINER,
@@ -50,5 +60,6 @@ def render(app: Dash, input_count: int) -> html.Div:
         children=[
             html.H5('Weights'),
             html.Div(id=ids.WEIGHT_SLIDER_CONTAINER, children=weight_content),
+            html.Div(id=ids.WEIGHTS_CONTAINER_TEXT)
         ]
     )

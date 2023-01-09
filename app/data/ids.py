@@ -4,6 +4,7 @@ SCATTER_PLOT = 'scatter-plot'
 WEIGHTS_CONTAINER = 'weights-container'
 WEIGHT_SLIDER = 'weights-slider'
 WEIGHT_SLIDER_CONTAINER = 'weights-slider-container'
+WEIGHTS_CONTAINER_TEXT = 'weights-container-text'
 
 BG_COLOUR = '#222'
 POSITIVE_COLOUR = '#5BAFF7'
