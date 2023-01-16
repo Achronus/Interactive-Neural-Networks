@@ -25,15 +25,25 @@ def create_layout(app: Dash, data: DataSource) -> dbc.Container:
             dbc.Row(
                 children=[
                     dbc.Col(
+                        id=ids.SCATTER_PLOT1_CONTAINER,
+                        className=['align-self-center'],
                         xs=12, lg=8,
                         children=[
-                            scatter_plot.render(data, weights=ids.SIMPLE_NN_START_WEIGHTS)
+                            scatter_plot.render(
+                                data,
+                                weights=ids.SIMPLE_NN_START_WEIGHTS,
+                                biases=ids.SIMPLE_NN_START_BIASES
+                            )
                         ]
                     ),
                     dbc.Col(
                         xs=12, lg=4,
                         children=[
-                            nn_slider.render_simple_params(app, data, weights=ids.SIMPLE_NN_START_WEIGHTS)
+                            nn_slider.render_simple_params(
+                                app, data,
+                                weights=ids.SIMPLE_NN_START_WEIGHTS,
+                                biases=ids.SIMPLE_NN_START_BIASES
+                            )
                         ]
                     )
                 ]

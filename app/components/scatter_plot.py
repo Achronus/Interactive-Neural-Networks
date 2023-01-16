@@ -11,17 +11,18 @@ from ..data.source import DataSource
 from ..models.classifier import SimpleNeuralNetwork
 
 
-def render(source: DataSource, weights: list[float]) -> html.Div:
+def render(source: DataSource, weights: list[float], biases: list[float]) -> html.Div:
     """
     Displays a scatter plot, overlaid with a heatmap.
 
     :param source: (DataSource) a data source object containing data
-    :param weights: (list[float]) a list of float values corresponding to neural network weights
+    :param weights: (list[float]) a list of neural network weights
+    :param biases: (list[float]) a list of neural network biases
 
     :return: a dash html.Div containing the scatter plot
     """
     fig = make_subplots(rows=1, cols=1)
-    fig = _set_background(fig, source, weights)
+    fig = _set_background(fig, source, weights, biases)
     fig = _set_scatter(fig, source)
     return html.Div(dcc.Graph(figure=fig, config={'staticPlot:': True}), id=ids.SCATTER_PLOT)
 
@@ -54,17 +55,18 @@ def _set_scatter(fig: go.Figure, source: DataSource) -> go.Figure:
     return fig
 
 
-def _set_background(fig: go.Figure, source: DataSource, weights: list[float]) -> go.Figure:
+def _set_background(fig: go.Figure, source: DataSource, weights: list[float], biases: list[float]) -> go.Figure:
     """
     Applies a heatmap over the scatter plot, displaying the networks predictions as an overlaid coloured.
 
     :param fig: (go.Figure) an existing set of subplots
     :param source: (DataSource) a data source object containing data
-    :param weights: (list[float]) a list of float values corresponding to neural network weights
+    :param weights: (list[float]) a list of neural network weights
+    :param biases: (list[float]) a list of neural network biases
 
     :return: a dash graph object figure containing the scatter plot
     """
-    clf = SimpleNeuralNetwork(weights)
+    clf = SimpleNeuralNetwork(weights, biases)
 
     # Create a mesh to plot
     h = .02  # step size

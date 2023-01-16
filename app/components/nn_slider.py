@@ -10,7 +10,7 @@ from app.data.source import DataSource
 
 
 @dataclass
-class WeightSlider:
+class ParameterSlider:
     """
     A data class for creating a custom slider with default values.
 
@@ -29,7 +29,7 @@ class WeightSlider:
     def create(self) -> dcc.Slider:
         return dcc.Slider(
             min=self.min, max=self.max, step=self.step, value=self.value,
-            id=f'{ids.WEIGHT_SLIDER}-{self.id}',
+            id=self.id,
             marks={
                 self.min: {'label': str(self.min)},
                 self.value: {'label': str(self.value)},
@@ -39,7 +39,39 @@ class WeightSlider:
         )
 
 
-def render_simple_params(app: Dash, data: DataSource, weights: list[float]) -> html.Div:
+class AssignContent:
+    """Helper class for assigning weights and biases into respective `html.Divs`."""
+    def __init__(self, title_id: str, slider_id: str) -> None:
+        self.title_id = title_id
+        self.slider_id = slider_id
+
+    def set_with_groupby(self, data: list[float], indices: list[int]) -> list:
+        """
+        Creates and merge titles and sliders into a list using `itertools.groupby`. Used for weight indexing.
+
+        :param data: (list[float]) a list of float data
+        :param indices: (list[int]) a list of duplicate indices in ascending order. For example, [1, 1, 2, 2]
+
+        :return: a list of html.H6 and dcc.Slider objects in respective order
+        """
+        titles = [html.H6(f'{self.title_id}{i}_{idx}') for _, group in itertools.groupby(indices) for idx, i in enumerate(group, start=1)]
+        sliders = [ParameterSlider(id=f'{self.slider_id}-{i}', value=data[i]).create() for i in range(len(titles))]
+        return list(itertools.chain.from_iterable(zip(titles, sliders)))
+
+    def set_with_range(self, data: list[float]) -> list:
+        """
+        Creates and merges titles and sliders into a list using a standard list comprehension. Used for bias indexing.
+
+        :param data: (list[float]) a list of float data
+
+        :return: a list of html.H6 and dcc.Slider objects in respective order
+        """
+        titles = [html.H6(f'{self.title_id}_{i+1}') for i in range(len(data))]
+        sliders = [ParameterSlider(id=f'{self.slider_id}-{i}', value=data[i]).create() for i in range(len(titles))]
+        return list(itertools.chain.from_iterable(zip(titles, sliders)))
+
+
+def render_simple_params(app: Dash, data: DataSource, weights: list[float], biases: list[float]) -> html.Div:
     """
     Creates weight slider data for a neural network containing two inputs and two outputs (no hidden layers) and
     uses a callback to update its corresponding scatter plot when sliders are changed.
@@ -47,6 +79,7 @@ def render_simple_params(app: Dash, data: DataSource, weights: list[float]) -> h
     :param app: (Dash) an existing Dash application
     :param data: (DataSource) a data source object containing data
     :param weights: (list[float]) a predefined set of weights
+    :param biases: (list[float]) a predefined set of biases
 
     :return: a dash html.Div containing weight sliders
     """
@@ -54,28 +87,42 @@ def render_simple_params(app: Dash, data: DataSource, weights: list[float]) -> h
     indices = [i for i in range(1, input_count+1)] * input_count
     indices.sort()  # [1, 1, 2, 2]
 
-    slider_titles = [html.H6(f'w{i}_{idx}') for _, group in itertools.groupby(indices) for idx, i in enumerate(group, start=1)]
-    sliders = [WeightSlider(id=f'{i}', value=weights[i]).create() for i in range(len(slider_titles))]
-    weight_content = list(itertools.chain.from_iterable(zip(slider_titles, sliders)))
+    weight_content = AssignContent(title_id='w', slider_id=ids.WEIGHT_SLIDER).set_with_groupby(weights, indices=indices)
+    bias_content = AssignContent(title_id='b', slider_id=ids.BIAS_SLIDER).set_with_range(biases)
 
     @app.callback(
-        Output(ids.SCATTER_PLOT, "children"),
+        Output(ids.SCATTER_PLOT1_CONTAINER, "children"),
         [
             Input(f'{ids.WEIGHT_SLIDER}-0', "value"),
             Input(f'{ids.WEIGHT_SLIDER}-1', "value"),
             Input(f'{ids.WEIGHT_SLIDER}-2', "value"),
-            Input(f'{ids.WEIGHT_SLIDER}-3', "value")
+            Input(f'{ids.WEIGHT_SLIDER}-3', "value"),
+            Input(f'{ids.BIAS_SLIDER}-0', "value"),
+            Input(f'{ids.BIAS_SLIDER}-1', "value")
         ]
     )
-    def update_plot(w1: float, w2: float, w3: float, w4: float) -> html.Div:
-        return scatter_plot.render(data, weights=[w1, w2, w3, w4])
+    def update_plot(w1: float, w2: float, w3: float, w4: float, b1: float, b2: float) -> html.Div:
+        return scatter_plot.render(data, weights=[w1, w2, w3, w4], biases=[b1, b2])
 
     return html.Div(
-        id=ids.WEIGHTS_CONTAINER,
+        id=ids.SLIDER_CONTAINER,
         className=['mt-5'],
         children=[
-            html.H5('Weights'),
-            html.Div(id=ids.WEIGHT_SLIDER_CONTAINER, children=weight_content),
-            html.Div(id=ids.WEIGHTS_CONTAINER_TEXT)
+            html.Div(
+                id=ids.WEIGHT_CONTAINER,
+                className=['mb-3'],
+                children=[
+                    html.H5('Weights'),
+                    html.Div(id=ids.WEIGHT_SLIDER_CONTAINER, children=weight_content)
+                ]
+            ),
+            html.Div(
+                id=ids.BIAS_CONTAINER,
+                className=['mt-3'],
+                children=[
+                    html.H5('Biases'),
+                    html.Div(id=ids.BIAS_SLIDER_CONTAINER, children=bias_content)
+                ]
+            )
         ]
     )
