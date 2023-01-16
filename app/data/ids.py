@@ -15,3 +15,5 @@ LABEL_TWO = 'Negative'
 X_COL_NAME = 'humidity'
 Y_COL_NAME = 'temperature'
 LABEL_COL_NAME = 'label'
+
+SIMPLE_NN_START_WEIGHTS = [-0.8, 0.1, -0.3, 0.2]

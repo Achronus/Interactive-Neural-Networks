@@ -39,13 +39,14 @@ class WeightSlider:
         )
 
 
-def render_simple_params(app: Dash, data: DataSource) -> html.Div:
+def render_simple_params(app: Dash, data: DataSource, weights: list[float]) -> html.Div:
     """
     Creates weight slider data for a neural network containing two inputs and two outputs (no hidden layers) and
     uses a callback to update its corresponding scatter plot when sliders are changed.
 
     :param app: (Dash) an existing Dash application
     :param data: (DataSource) a data source object containing data
+    :param weights: (list[float]) a predefined set of weights
 
     :return: a dash html.Div containing weight sliders
     """
@@ -54,7 +55,7 @@ def render_simple_params(app: Dash, data: DataSource) -> html.Div:
     indices.sort()  # [1, 1, 2, 2]
 
     slider_titles = [html.H6(f'w{i}_{idx}') for _, group in itertools.groupby(indices) for idx, i in enumerate(group, start=1)]
-    sliders = [WeightSlider(id=f'{i}').create() for i in range(len(slider_titles))]
+    sliders = [WeightSlider(id=f'{i}', value=weights[i]).create() for i in range(len(slider_titles))]
     weight_content = list(itertools.chain.from_iterable(zip(slider_titles, sliders)))
 
     @app.callback(
