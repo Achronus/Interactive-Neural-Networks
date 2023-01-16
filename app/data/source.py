@@ -4,15 +4,17 @@ from dataclasses import dataclass
 import pandas as pd
 import numpy as np
 
+from app.data import ids
 from app.data.generate import DataSchema
 
 
 @dataclass
 class DataSource:
+    """A data class for retrieving information from a given pandas DataFrame."""
     _data: pd.DataFrame
 
     def filter(self, x: list[str], y: list[str], labels: list[str]) -> DataSource:
-        filtered_data = self._data.query(f"x in {x} and y in {y} and label in {labels}")
+        filtered_data = self._data.query(f"{ids.X_COL_NAME} in {x} and {ids.Y_COL_NAME} in {y} and {ids.LABEL_COL_NAME} in {labels}")
         return DataSource(filtered_data)
 
     @property

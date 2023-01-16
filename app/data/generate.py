@@ -11,9 +11,9 @@ Preprocessor = Callable[[pd.DataFrame], pd.DataFrame]
 
 
 class DataSchema:
-    X_AXIS = 'x'
-    Y_AXIS = 'y'
-    LABELS = 'label'
+    X_AXIS = ids.X_COL_NAME
+    Y_AXIS = ids.Y_COL_NAME
+    LABELS = ids.LABEL_COL_NAME
 
 
 def create_sample_data(n_points: int, seed: int = 362, threshold: int = 11) -> pd.DataFrame:
@@ -53,7 +53,14 @@ def compose(*functions: Preprocessor) -> Preprocessor:
 
 
 def set_data(n_points: int, n_positive: int, seed: int = 362, threshold: int = 11) -> pd.DataFrame:
-    """Create data and iterate it through the preprocessor pipeline."""
+    """
+    Create data and supply it through the preprocessor pipeline. Returns a pandas DataFrame.
+
+    :param n_points: (int) total number of sample data
+    :param n_positive: (int) number of positive labels
+    :param seed: (int) number for random seed
+    :param threshold: (int) maximum value of sample data (exclusive, divided by 10)
+    """
     data = create_sample_data(n_points, seed, threshold)
 
     preprocessor = compose(

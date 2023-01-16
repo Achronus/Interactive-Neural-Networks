@@ -1,11 +1,19 @@
 from dash import Dash, html
 import dash_bootstrap_components as dbc
 
-from app.components import scatter_plot, weight_slider
+from app.components import scatter_plot, nn_slider
 from app.data.source import DataSource
 
 
 def create_layout(app: Dash, data: DataSource) -> dbc.Container:
+    """
+    Creates the Dash application layout and returns it.
+
+    :param app: (Dash) an existing Dash application
+    :param data: (DataSource) a data source object containing data
+
+    :return: a dash dbc.Container containing the applications layout
+    """
     return dbc.Container(
         className="app-div container mt-4 mb-4",
         children=[
@@ -24,7 +32,7 @@ def create_layout(app: Dash, data: DataSource) -> dbc.Container:
                     dbc.Col(
                         xs=12, lg=4,
                         children=[
-                            weight_slider.render_two_inputs(app, data)
+                            nn_slider.render_simple_params(app, data)
                         ]
                     )
                 ]

@@ -5,21 +5,36 @@ import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-from .utils import hex_to_rgba
 from ..data import ids
 from ..data.generate import DataSchema
 from ..data.source import DataSource
-from ..models.classifier import Classify
+from ..models.classifier import SimpleNeuralNetwork
 
 
 def render(source: DataSource, weights: list[float]) -> html.Div:
+    """
+    Displays a scatter plot, overlaid with a heatmap.
+
+    :param source: (DataSource) a data source object containing data
+    :param weights: (list[float]) a list of float values corresponding to neural network weights
+
+    :return: a dash html.Div containing the scatter plot
+    """
     fig = make_subplots(rows=1, cols=1)
-    fig = _set_contour(fig, source, weights)
+    fig = _set_background(fig, source, weights)
     fig = _set_scatter(fig, source)
     return html.Div(dcc.Graph(figure=fig, config={'staticPlot:': True}), id=ids.SCATTER_PLOT)
 
 
 def _set_scatter(fig: go.Figure, source: DataSource) -> go.Figure:
+    """
+    Creates a scatter plot from data supplied to a DataSource object.
+
+    :param fig: (go.Figure) an existing set of subplots
+    :param source: (DataSource) a data source object containing data
+
+    :return: a dash graph object figure containing the scatter plot
+    """
     colours = {ids.LABEL_ONE: ids.POSITIVE_COLOUR, ids.LABEL_TWO: ids.NEGATIVE_COLOUR}
     filtered_data = source.filter(x=source.all_x, y=source.all_y, labels=source.all_labels)
 
@@ -39,8 +54,17 @@ def _set_scatter(fig: go.Figure, source: DataSource) -> go.Figure:
     return fig
 
 
-def _set_contour(fig: go.Figure, source: DataSource, weights: list[float]) -> go.Figure:
-    clf = Classify(weights)
+def _set_background(fig: go.Figure, source: DataSource, weights: list[float]) -> go.Figure:
+    """
+    Applies a heatmap over the scatter plot, displaying the networks predictions as an overlaid coloured.
+
+    :param fig: (go.Figure) an existing set of subplots
+    :param source: (DataSource) a data source object containing data
+    :param weights: (list[float]) a list of float values corresponding to neural network weights
+
+    :return: a dash graph object figure containing the scatter plot
+    """
+    clf = SimpleNeuralNetwork(weights)
 
     # Create a mesh to plot
     h = .02  # step size

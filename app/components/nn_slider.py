@@ -11,6 +11,15 @@ from app.data.source import DataSource
 
 @dataclass
 class WeightSlider:
+    """
+    A data class for creating a custom slider with default values.
+
+    :param id: (str) a string representing the name of the slider
+    :param min: (float) the minimum value of the slider. Default is -1
+    :param max: (float) the maximum value of the slider. Default is 1
+    :param step: (float) the movement size of the slider. Default is 0.1
+    :param value: (float) the starting value of the slider. Default is 0
+    """
     id: str
     min: float = -1
     max: float = 1
@@ -30,8 +39,16 @@ class WeightSlider:
         )
 
 
-def render_two_inputs(app: Dash, data: DataSource) -> html.Div:
-    """Creates a set of weights following two input nodes."""
+def render_simple_params(app: Dash, data: DataSource) -> html.Div:
+    """
+    Creates weight slider data for a neural network containing two inputs and two outputs (no hidden layers) and
+    uses a callback to update its corresponding scatter plot when sliders are changed.
+
+    :param app: (Dash) an existing Dash application
+    :param data: (DataSource) a data source object containing data
+
+    :return: a dash html.Div containing weight sliders
+    """
     input_count = 2
     indices = [i for i in range(1, input_count+1)] * input_count
     indices.sort()  # [1, 1, 2, 2]
@@ -49,7 +66,7 @@ def render_two_inputs(app: Dash, data: DataSource) -> html.Div:
             Input(f'{ids.WEIGHT_SLIDER}-3', "value")
         ]
     )
-    def update_output(w1: float, w2: float, w3: float, w4: float) -> html.Div:
+    def update_plot(w1: float, w2: float, w3: float, w4: float) -> html.Div:
         return scatter_plot.render(data, weights=[w1, w2, w3, w4])
 
     return html.Div(
