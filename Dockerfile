@@ -1,4 +1,4 @@
-FROM python:latest
+FROM python:3.11
 
 # Set dash debug mode
 ENV DASH_DEBUG_MODE False
