@@ -71,7 +71,7 @@ class AssignContent:
         return list(itertools.chain.from_iterable(zip(titles, sliders)))
 
 
-def render_simple_params(app: Dash, data: DataSource, weights: list[float], biases: list[float]) -> html.Div:
+def render_simple_params_no_hidden(app: Dash, data: DataSource, weights: list[float], biases: list[float]) -> html.Div:
     """
     Creates weight slider data for a neural network containing two inputs and two outputs (no hidden layers) and
     uses a callback to update its corresponding scatter plot when sliders are changed.
@@ -102,7 +102,7 @@ def render_simple_params(app: Dash, data: DataSource, weights: list[float], bias
         ]
     )
     def update_plot(w1: float, w2: float, w3: float, w4: float, b1: float, b2: float) -> html.Div:
-        return scatter_plot.render(data, weights=[w1, w2, w3, w4], biases=[b1, b2])
+        return scatter_plot.render_no_hidden(data, weights=[w1, w2, w3, w4], biases=[b1, b2])
 
     return html.Div(
         id=ids.SLIDER_CONTAINER,

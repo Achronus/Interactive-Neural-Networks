@@ -11,7 +11,7 @@ from ..data.source import DataSource
 from ..models.classifier import SimpleNeuralNetwork
 
 
-def render(source: DataSource, weights: list[float], biases: list[float]) -> html.Div:
+def render_no_hidden(source: DataSource, weights: list[float], biases: list[float]) -> html.Div:
     """
     Displays a scatter plot, overlaid with a heatmap.
 
