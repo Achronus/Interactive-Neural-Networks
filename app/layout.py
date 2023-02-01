@@ -1,7 +1,7 @@
 from dash import Dash, html
 import dash_bootstrap_components as dbc
 
-from app.components import scatter_plot, nn_slider
+from app.components import scatter_plot, nn_slider, nn_graph
 from app.data import ids
 from app.data.source import DataSource
 
@@ -29,7 +29,7 @@ def create_layout(app: Dash, data: DataSource) -> dbc.Container:
                         className=['align-self-center'],
                         xs=12, lg=8,
                         children=[
-                            scatter_plot.render(
+                            scatter_plot.render_no_hidden(
                                 data,
                                 weights=ids.SIMPLE_NN_START_WEIGHTS,
                                 biases=ids.SIMPLE_NN_START_BIASES
@@ -39,11 +39,27 @@ def create_layout(app: Dash, data: DataSource) -> dbc.Container:
                     dbc.Col(
                         xs=12, lg=4,
                         children=[
-                            nn_slider.render_simple_params(
+                            nn_slider.render_simple_params_no_hidden(
                                 app, data,
                                 weights=ids.SIMPLE_NN_START_WEIGHTS,
                                 biases=ids.SIMPLE_NN_START_BIASES
                             )
+                        ]
+                    )
+                ]
+            ),
+            dbc.Row(
+                children=[
+                    dbc.Col(
+                        xs=12, lg=8,
+                        children=[
+                            nn_graph.render_simple_nn_no_hidden(app)
+                        ]
+                    ),
+                    dbc.Col(
+                        xs=12, lg=4,
+                        children=[
+                            # nn_graph.display_formulas(app)
                         ]
                     )
                 ]
